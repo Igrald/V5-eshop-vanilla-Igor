@@ -1,6 +1,8 @@
 const App = {
     init(){
-        console.log("Start", App);
+        console.log("Start");
+        this.controllers.createLayout()
         console.log("End");
     }
 }
+
