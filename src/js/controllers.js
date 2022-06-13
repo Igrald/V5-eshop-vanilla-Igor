@@ -2,7 +2,6 @@ App.controllers = {
 
     createHeader(){
         const els = App.elements
-        console.log(els);
 
         const header = els.header
 
@@ -35,9 +34,8 @@ App.controllers = {
     },
     createMain(){
         const els = App.elements
-        const main = els.main
-
-        main.container.style.flexGrow = "1"
+        const main = els.main.main
+        console.log(main);
 
         main.bg.src = "./assets/bg.png"
         main.bg.style.width = "100%"
@@ -63,7 +61,7 @@ App.controllers = {
         main.container.appendChild(main.bg)
         main.container.appendChild(main.h1)
         main.container.appendChild(main.p)
-        els.root.appendChild(main.container)
+        els.main.container.appendChild(main.container)
     },
     createFooter(){
         const els = App.elements
@@ -75,10 +73,37 @@ App.controllers = {
         footer.container.style.justifyContent = "center"
         footer.container.style.alignItems = "center"
         footer.container.style.background = "#000000"
-        footer.container.style.padding = "100px"
+        footer.container.style.padding = "50px"
 
         footer.container.appendChild(footer.logo)
         els.root.appendChild(footer.container)
+    },
+    createCheckout(){
+        const els = App.elements
+        const {container, tittle, items, confirmBtn} = els.main.checkout
+        
+        container.style.backgroundColor = "#CCCCCC"
+        container.style.height = "100%"
+        container.style.padding = "230px" 
+
+
+        tittle.innerText = "My cart [ Total Amount : xx ]"
+        tittle.style.fontStyle = "normal"
+        tittle.style.fontSize = "24px"
+        tittle.style.fontWeight = "700"
+        tittle.style.height = "29px"
+        tittle.style.textAlign = "center"
+        tittle.style.color = "#000000"
+
+        const btn = document.createElement("button")
+        btn.innerText = "Confirm purchase"
+        btn.classList.add("btn")
+        confirmBtn.style.textAlign = "center"
+
+        confirmBtn.appendChild(btn)
+        container.appendChild(tittle)
+        container.appendChild(confirmBtn)
+        els.main.container.appendChild(container)
     },
     createLayout(){
         const els = App.elements
@@ -88,7 +113,13 @@ App.controllers = {
         els.root.style.flexDirection = "column"
 
         this.createHeader()
-        this.createMain()
+
+
+        //this.createMain()
+        this.createCheckout()
+        els.main.container.style.flexGrow = "1"
+        els.root.appendChild(els.main.container)
+
         this.createFooter()
 }
 }
