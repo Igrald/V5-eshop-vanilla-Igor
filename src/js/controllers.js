@@ -1,5 +1,29 @@
 App.controllers = {
 
+    getPage(){
+        const paramsString = window.location.search;
+        const searchParams = new URLSearchParams(paramsString);
+        const page = searchParams.get("p")
+        return page
+    },
+    router(){
+        setInterval(()=>{
+
+            const page = this.getPage()
+            if(page === "cart"){
+                this.createCheckout()
+            }else if(!page){
+                this.createMain()
+            }else{
+
+            }
+
+
+        },100)
+    },
+    go(p){
+        history.pushState({ p }, "", App.state.routes[p])
+    },
     createHeader(){
         const els = App.elements
 
@@ -15,14 +39,17 @@ App.controllers = {
 
         header.logo.src =  "./assets/logo.png"
         header.logo.style.margin = "35px 0 35px 48px" 
-
+        header.logo.style.cursor = "pointer"
+        header.logo.onclick=()=>{
+            App.controllers.go("home")
+        }
         header.cartIcon.src =  "./assets/carrinho.png"
         header.cartIcon.style.width = "36px"
         header.cartIcon.style.height= "36px"
         header.cartIcon.style.marginRight = "53px"
         header.cartIcon.style.cursor= "pointer"
         header.cartIcon.onclick = ()=>{
-            console.log("click cart");
+            App.controllers.go("cart")
         }
 
 
@@ -35,7 +62,6 @@ App.controllers = {
     createMain(){
         const els = App.elements
         const main = els.main.main
-        console.log(main);
 
         main.bg.src = "./assets/bg.png"
         main.bg.style.width = "100%"
@@ -61,6 +87,8 @@ App.controllers = {
         main.container.appendChild(main.bg)
         main.container.appendChild(main.h1)
         main.container.appendChild(main.p)
+
+        els.main.container.innerHTML= ""
         els.main.container.appendChild(main.container)
     },
     createFooter(){
@@ -80,7 +108,7 @@ App.controllers = {
     },
     createCheckout(){
         const els = App.elements
-        const {container, tittle, items, confirmBtn} = els.main.checkout
+        const {container, tittle, items, confirmBtn, confirmBtnContainer} = els.main.checkout
         
         container.style.backgroundColor = "#CCCCCC"
         container.style.height = "100%"
@@ -95,14 +123,15 @@ App.controllers = {
         tittle.style.textAlign = "center"
         tittle.style.color = "#000000"
 
-        const btn = document.createElement("button")
-        btn.innerText = "Confirm purchase"
-        btn.classList.add("btn")
-        confirmBtn.style.textAlign = "center"
+        confirmBtn.innerText = "Confirm purchase"
+        confirmBtn.classList.add("btn")
+        confirmBtnContainer.style.textAlign = "center"
+        confirmBtnContainer.appendChild(confirmBtn)
 
-        confirmBtn.appendChild(btn)
         container.appendChild(tittle)
-        container.appendChild(confirmBtn)
+        container.appendChild(confirmBtnContainer)
+
+        els.main.container.innerHTML= ""
         els.main.container.appendChild(container)
     },
     createLayout(){
@@ -116,10 +145,11 @@ App.controllers = {
 
 
         //this.createMain()
-        this.createCheckout()
+        //this.createCheckout()
         els.main.container.style.flexGrow = "1"
         els.root.appendChild(els.main.container)
 
         this.createFooter()
 }
 }
+
