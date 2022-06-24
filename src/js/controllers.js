@@ -134,12 +134,13 @@ App.controllers = {
         els.main.container.innerHTML= ""
         els.main.container.appendChild(container)
     },
-    createButtons(text){
+    createButtons(text, type = "primary", onClick){
         const bt = document.createElement("button")
         
         const bts = bt.style
 
         bt.innerHTML = text
+        bt.onclick = onClick
 
         bts.display = "flex"
         bts.flexDirection = "column"
@@ -148,10 +149,30 @@ App.controllers = {
         bts.padding = "5px 16px"
         bts.width = "84px"
         bts.height = "32px"
-        bts.backgroundColor = "#000000"
-        bts.boxShadow = "0px 2px 0px rgba(0, 0, 0, 0.043)"
         bts.borderRadius = "20px"
         bts.color = "#FFFFFF"
+        bts.border = "none"
+
+        if(type == "primary"){
+            bts.backgroundColor = "#000000"
+            bts.boxShadow = "0px 2px 0px rgba(0, 0, 0, 0.043)"
+        }
+
+        if(type == "secundary"){
+            bts.backgroundColor = "rgba(0, 0, 0, 0.6)"
+            bts.boxShadow = "0px 4px 4px rgba(0, 0, 0, 0.25)"
+        }
+        if(type == "terciary"){
+            bts.backgroundColor = "rgba(0, 0, 0, 0.2)"
+            bts.boxShadow = "0px 4px 4px rgba(0, 0, 0, 0.25)"
+            bts.color= "#000000"
+        }
+        if(type == "default"){
+            bts.backgroundColor = "#FFFFFF;"
+            bts.boxShadow = "0px 2px 0px rgba(0, 0, 0, 0.043)"
+            bts.color = "#000000"
+            bts.border = "2px solid #000000"
+        }
 
         return bt
     },
