@@ -134,6 +134,27 @@ App.controllers = {
         els.main.container.innerHTML= ""
         els.main.container.appendChild(container)
     },
+    createButtons(text){
+        const bt = document.createElement("button")
+        
+        const bts = bt.style
+
+        bt.innerHTML = text
+
+        bts.display = "flex"
+        bts.flexDirection = "column"
+        bts.justifyContent = "center"
+        bts.alignItems = "center"
+        bts.padding = "5px 16px"
+        bts.width = "84px"
+        bts.height = "32px"
+        bts.backgroundColor = "#000000"
+        bts.boxShadow = "0px 2px 0px rgba(0, 0, 0, 0.043)"
+        bts.borderRadius = "20px"
+        bts.color = "#FFFFFF"
+
+        return bt
+    },
     createLayout(){
         const els = App.elements
 
