@@ -194,68 +194,45 @@ App.controllers = {
 
         return bt
     },
-    createCard(image){
+    createCard(images, ttl,description, price, onClick){
         const card = document.createElement("div")
-        const img = document.createElement("img")
-        const div = document.createElement("div")
+        // const div = document.createElement("div")
         const title = document.createElement("div")
         const usd = document.createElement("div")
         const desc = document.createElement("div")
-        const button = this.createButtons("add cart", "primary", ()=>{
-            console.log("click");
-        })
+        const button = this.createButtons("add cart", "primary", onClick)
+        const imgContainer = document.createElement("div")
+        const Carousel = new carousel({images, container: imgContainer})
 
        //----const-styles-------//
         const cards = card.style
-        const imgs = img.style
-        const divs = div.style
         const titles = title.style
         const usds = usd.style
         const descs = desc.style
        //----const-styles-------//
 
-        //---------styles----//image//-----//
+        //---------styles--------//
         cards.display = "flex"
         cards.flexDirection = "column"
         cards.alignItems = "center"
         cards.padding = "0px"
-        cards.border = "1px solid black",
         cards.justifyContent = "center"
-        // cards.gap = "40px"
-        // cards.width = "306px"
-        // cards.height = "457px"
-
-        divs.width = "300px"
-        divs.textAlign = "center"
-        divs.position = "relative"
-        divs.height = "300px"
-        divs.borderRadius = "50%"
-        divs.overflow = "hidden"
-
-        img.src = image  //----image----//
-
-        imgs.position = "absolute"
-        imgs.width = "100%"
-        imgs.height = "100%"
-        imgs.top = "0"
-        imgs.left = "0"
-        imgs.objectFit = "cover"
-
-        title.innerHTML = "Title"
+        cards.width = "fit-content"
+        title.innerHTML = ttl  // HTML
         titles.fontWeight = "700"
         titles.fontSize = "16px"
         titles.lineHeight = "19px"
         titles.color = "#000000"
         titles.marginTop = "40px"
 
-        usd.innerHTML = "USD 2"
+        usd.innerHTML = price // HTML
         usds.fontWeight = "400"
         usds.fontSize = "16px"
         usds.lineHeight = "19px"
         usds.color = "#000000"
         usds.marginTop = "4px"
 
-        desc.innerHTML = "Description of the product"
+        desc.innerHTML = description // HTML
         descs.fontWeight = "400"
         descs.fontSize = "16px"
         descs.lineHeight = "19px"
@@ -264,9 +241,8 @@ App.controllers = {
 
         button.style.marginTop = "4px"
         //---------styles---------//
-
-        card.appendChild(div)
-        div.appendChild(img)
+        
+        card.appendChild(imgContainer)
         card.appendChild(title)
         card.appendChild(usd)
         card.appendChild(desc)
