@@ -9,6 +9,10 @@ App.controllers = {
     router(){
         setInterval(()=>{
 
+            if(App.state.routeRendered){
+                return
+            }
+
             const page = this.getPage()
             if(page === "cart"){
                 this.createCheckout()
@@ -18,17 +22,35 @@ App.controllers = {
 
             }
 
+            App.state.routeRendered = true
 
         },100)
     },
     go(p){
+        App.state.routeRendered = false
         history.pushState({ p }, "", App.state.routes[p])
+    },
+    createProductsElements(container){
+        App.state.products.forEach(products => {
+        const card = this.createCard(
+            products.ttl,
+            products.description,
+            products.price,
+            products.images, 
+            ()=>{console.log(products);})
+
+                
+        container.appendChild(card)
+        })
+
+
     },
     createHeader(){
         const els = App.elements
 
         const header = els.header
 
+        //---------------------------style---------------------------//
         header.container.style.background = "rgba(102, 102, 102, 0.3)"
         header.container.style.display = "flex"
         header.container.style.justifyContent = "space-between"
@@ -36,21 +58,39 @@ App.controllers = {
         header.container.style.position = "fixed"
         header.container.style.top = "0"
         header.container.style.width = "100%"
+        header.container.style.transition = "top 0.3s"
 
         header.logo.src =  "./assets/logo.png"
         header.logo.style.margin = "35px 0 35px 48px" 
         header.logo.style.cursor = "pointer"
-        header.logo.onclick=()=>{
-            App.controllers.go("home")
-        }
+
         header.cartIcon.src =  "./assets/carrinho.png"
         header.cartIcon.style.width = "36px"
         header.cartIcon.style.height= "36px"
         header.cartIcon.style.marginRight = "53px"
         header.cartIcon.style.cursor= "pointer"
+        //---------------------------style---------------------------//
+
+        //------------------------onAction------------------------//
         header.cartIcon.onclick = ()=>{
             App.controllers.go("cart")
         }
+        header.logo.onclick=()=>{
+            App.controllers.go("home")
+        }
+
+        var scroll = window.pageYOffset;
+        window.onscroll = () => {
+        var currentScroll = window.pageYOffset;
+        if (scroll > currentScroll) {
+        header.container.style.top = "0";
+        } 
+        else 
+        {
+        header.container.style.top = "-6rem";
+        }
+        scroll = currentScroll;}
+        //------------------------onAction------------------------//
 
 
         header.container.appendChild(header.logo)
@@ -63,6 +103,7 @@ App.controllers = {
         const els = App.elements
         const main = els.main.main
 
+        //-------------styles-------------//
         main.bg.src = "./assets/bg.png"
         main.bg.style.width = "100%"
 
@@ -73,9 +114,6 @@ App.controllers = {
         main.h1.style.lineHeight = "29px"
         main.h1.style.textAlign = "center"
         main.h1.style.color = "#000000" 
-        
-        main.p.innerText = 
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy tincidunt ut laoreet dolore magna aliquam erat volutpat."
 
         main.p.style.fontSize = "24px"
         main.p.style.fontStyle = "normal"
@@ -84,9 +122,21 @@ App.controllers = {
         main.p.style.textAlign = "center"
         main.p.style.color = "#000000" 
 
+        main.itemsContainer.style.display = "flex"
+        main.itemsContainer.style.flexWrap = "wrap"
+        main.itemsContainer.style.justifyContent = "center"
+        //-------------styles-------------//
+
+        //-------------text-------------//
+        main.p.innerText = 
+        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy tincidunt ut laoreet dolore magna aliquam erat volutpat."
+        //-------------text-------------//
+
+        this.createProductsElements(main.itemsContainer)
         main.container.appendChild(main.bg)
         main.container.appendChild(main.h1)
         main.container.appendChild(main.p)
+        main.container.appendChild(main.itemsContainer)
 
         els.main.container.innerHTML= ""
         els.main.container.appendChild(main.container)
@@ -115,6 +165,7 @@ App.controllers = {
         container.style.padding = "230px" 
 
 
+        //-----------------------style-----------------------//
         tittle.innerText = "My cart [ Total Amount : xx ]"
         tittle.style.fontStyle = "normal"
         tittle.style.fontSize = "24px"
@@ -123,11 +174,15 @@ App.controllers = {
         tittle.style.textAlign = "center"
         tittle.style.color = "#000000"
 
-        confirmBtn.innerText = "Confirm purchase"
-        confirmBtn.classList.add("btn")
         confirmBtnContainer.style.textAlign = "center"
-        confirmBtnContainer.appendChild(confirmBtn)
+        //-----------------------style-----------------------//
 
+        //-----------------------text-----------------------//
+        confirmBtn.innerText = "Confirm purchase"
+        //-----------------------text-----------------------//
+
+        confirmBtn.classList.add("btn")
+        confirmBtnContainer.appendChild(confirmBtn)
         container.appendChild(tittle)
         container.appendChild(confirmBtnContainer)
 
@@ -143,9 +198,6 @@ App.controllers = {
 
         this.createHeader()
 
-
-        //this.createMain()
-        //this.createCheckout()
         els.main.container.style.flexGrow = "1"
         els.root.appendChild(els.main.container)
 
@@ -194,9 +246,8 @@ App.controllers = {
 
         return bt
     },
-    createCard(images, ttl,description, price, onClick){
+    createCard(ttl,description, price,images, onClick){
         const card = document.createElement("div")
-        // const div = document.createElement("div")
         const title = document.createElement("div")
         const usd = document.createElement("div")
         const desc = document.createElement("div")
