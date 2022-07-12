@@ -56,10 +56,21 @@ App.state = {
         ]
         },
     ],
+    cart: [],
     routes: {
         home: `${window.location.origin}${window.location.pathname}`,
         cart: "?p=cart"
     },
-    routeRendered: false
+    routeRendered: false,
+
+    mutations: {
+        addToCart(products) {
+            if(App.state.cart.find(p => p.id === products.id)){
+                return "EXISTS"
+            }
+            App.state.cart.push(products)
+            return "OK"
+        },
+    },
 }
 

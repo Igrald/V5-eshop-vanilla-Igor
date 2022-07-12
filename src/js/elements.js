@@ -4,6 +4,8 @@ App.elements = {
         container: document.createElement("div"),
         logo: document.createElement("img"),
         cartIcon: document.createElement("img"),
+        cartCount: document.createElement("span"),
+        cartContainer: document.createElement("div")
     },
     main:{
         container: document.createElement("div"),

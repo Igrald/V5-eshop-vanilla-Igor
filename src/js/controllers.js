@@ -37,8 +37,17 @@ App.controllers = {
             products.description,
             products.price,
             products.images, 
-            ()=>{console.log(products);})
-
+            ()=>{console.log(products);
+            const res = confirm("deseja adicionar o produto ao carrinho?")
+            const added = App.state.mutations.addToCart(products)
+            if(res && added === "OK"){
+                    App.elements.header.cartCount.innerText = App.state.cart.length
+            }
+            else if (added === "EXISTS"){
+                alert("já foi")
+            }
+            })
+            
                 
         container.appendChild(card)
         })
@@ -49,6 +58,8 @@ App.controllers = {
         const els = App.elements
 
         const header = els.header
+        const cartS =  header.cartContainer.style
+        const cartCs = header.cartCount.style
 
         //---------------------------style---------------------------//
         header.container.style.background = "rgba(102, 102, 102, 0.3)"
@@ -67,8 +78,16 @@ App.controllers = {
         header.cartIcon.src =  "./assets/carrinho.png"
         header.cartIcon.style.width = "36px"
         header.cartIcon.style.height= "36px"
-        header.cartIcon.style.marginRight = "53px"
         header.cartIcon.style.cursor= "pointer"
+
+        cartS.display = "flex"
+        cartS.width = "80px"
+        cartS.marginRight = "53px"
+        cartS.alignItems = "center"
+        
+        cartCs.marginTop = "15px"
+        cartCs.marginRight = "-1rem"
+        cartCs.color = "white"
         //---------------------------style---------------------------//
 
         //------------------------onAction------------------------//
@@ -90,11 +109,15 @@ App.controllers = {
         header.container.style.top = "-6rem";
         }
         scroll = currentScroll;}
+
+        header.cartCount.innerText = App.state.cart.length
+
         //------------------------onAction------------------------//
 
-
         header.container.appendChild(header.logo)
-        header.container.appendChild(header.cartIcon)
+        header.cartContainer.appendChild(header.cartIcon)
+        header.cartContainer.appendChild(header.cartCount)
+        header.container.appendChild(header.cartContainer)
 
         els.root.appendChild(header.container)
 
@@ -132,6 +155,7 @@ App.controllers = {
         "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy tincidunt ut laoreet dolore magna aliquam erat volutpat."
         //-------------text-------------//
 
+        main.itemsContainer.innerHTML = ""
         this.createProductsElements(main.itemsContainer)
         main.container.appendChild(main.bg)
         main.container.appendChild(main.h1)
@@ -292,7 +316,7 @@ App.controllers = {
 
         button.style.marginTop = "4px"
         //---------styles---------//
-        
+
         card.appendChild(imgContainer)
         card.appendChild(title)
         card.appendChild(usd)
