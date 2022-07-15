@@ -62,15 +62,34 @@ App.state = {
         cart: "?p=cart"
     },
     routeRendered: false,
-
+    count: 0,
     mutations: {
         addToCart(products) {
             if(App.state.cart.find(p => p.id === products.id)){
                 return "EXISTS"
             }
             App.state.cart.push(products)
+
             return "OK"
         },
+        removeFromCart(products) {
+            App.state.cart = App.state.cart.filter((p)=> p.id!== products.id)
+        },
+        getCount(){
+            return App.state.count
+        },
+        setCount(type = ""){
+            
+            if(type === "+"){
+                App.state.count++ 
+            }else if(type === "-"){
+                App.state.count--
+            }
+
+            if(App.state.count < 0){
+                App.state.count =  0
+            }
+        }
     },
 }
 

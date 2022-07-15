@@ -30,6 +30,18 @@ App.controllers = {
         App.state.routeRendered = false
         history.pushState({ p }, "", App.state.routes[p])
     },
+    confirmPurchase(){
+        console.log("olá");
+
+        const res = confirm("Are you sure?")
+        if(res){
+            App.state.cart = []
+            App.elements.header.cartCount.innerText = App.state.cart.length
+            
+            this.go("home")
+            alert("Thanks for purchase!")
+        }
+    },
     createProductsElements(container){
         App.state.products.forEach(products => {
         const card = this.createCard(
@@ -37,21 +49,46 @@ App.controllers = {
             products.description,
             products.price,
             products.images, 
-            ()=>{console.log(products);
-            const res = confirm("deseja adicionar o produto ao carrinho?")
-            const added = App.state.mutations.addToCart(products)
-            if(res && added === "OK"){
+            "Add to cart",
+            ()=>{
+            const md = this.createModal(()=>{
+                const added = App.state.mutations.addToCart(products)
+                this.closeModal(md)
+
+                if(added === "OK"){
                     App.elements.header.cartCount.innerText = App.state.cart.length
             }
-            else if (added === "EXISTS"){
-                alert("já foi")
-            }
+            }, "priceAdd")
+            App.elements.root.appendChild(md)
             })
             
                 
         container.appendChild(card)
         })
+    },
+    createCartElements(container){
+        App.state.cart.forEach(products => {
+        const card = this.createCard(
+            products.ttl,
+            products.description,
+            products.price,
+            products.images, 
+            "Remove from cart",
+            ()=>{console.log(products);
+                const md = this.createModal(
+                    ()=>{
+                        App.state.mutations.removeFromCart(products)
+                            App.elements.header.cartCount.innerText = App.state.cart.length
+                            App.controllers.createCheckout() 
+                            this.closeModal(md)
+                }, "priceRemove")
 
+            App.elements.root.appendChild(md)
+
+            })
+                
+        container.appendChild(card)
+        })
 
     },
     createHeader(){
@@ -180,17 +217,27 @@ App.controllers = {
         footer.container.appendChild(footer.logo)
         els.root.appendChild(footer.container)
     },
+    prices(){
+        let total = 0
+
+        for(let i = 0; i < App.state.cart.length; i++){
+            const cart = App.state.cart[i]
+            total = cart.price * App.state.count
+
+        }
+        const totalFormatted = new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(total)
+
+        return totalFormatted
+    },
     createCheckout(){
         const els = App.elements
-        const {container, tittle, items, confirmBtn, confirmBtnContainer} = els.main.checkout
-        
+        const {container, tittle, itemsContainer, confirmBtn, confirmBtnContainer} = els.main.checkout
+        const totalFormatted = this.prices()
+
+        //-----------------------style-----------------------//
         container.style.backgroundColor = "#CCCCCC"
         container.style.height = "100%"
         container.style.padding = "230px" 
-
-
-        //-----------------------style-----------------------//
-        tittle.innerText = "My cart [ Total Amount : xx ]"
         tittle.style.fontStyle = "normal"
         tittle.style.fontSize = "24px"
         tittle.style.fontWeight = "700"
@@ -202,12 +249,30 @@ App.controllers = {
         //-----------------------style-----------------------//
 
         //-----------------------text-----------------------//
+        tittle.innerText = `My cart [ Total Amount : ${totalFormatted} ]`
         confirmBtn.innerText = "Confirm purchase"
         //-----------------------text-----------------------//
+
+
+        //----------OnClick-----------//
+        confirmBtn.onclick = ()=>{
+            this.confirmPurchase()
+        }
+        //----------OnClick-----------//
+
+        //-------------------items---------------------//
+        itemsContainer.style.display = "flex"
+        itemsContainer.style.flexWrap = "wrap"
+        itemsContainer.style.justifyContent = "center"
+        itemsContainer.innerHTML = ""
+         this.createCartElements(itemsContainer)
+         //-------------------items---------------------//
+
 
         confirmBtn.classList.add("btn")
         confirmBtnContainer.appendChild(confirmBtn)
         container.appendChild(tittle)
+        container.appendChild(itemsContainer)
         container.appendChild(confirmBtnContainer)
 
         els.main.container.innerHTML= ""
@@ -270,12 +335,12 @@ App.controllers = {
 
         return bt
     },
-    createCard(ttl,description, price,images, onClick){
+    createCard(ttl,description, price,images, btnLabel, onClick){
         const card = document.createElement("div")
         const title = document.createElement("div")
         const usd = document.createElement("div")
         const desc = document.createElement("div")
-        const button = this.createButtons("add cart", "primary", onClick)
+        const button = this.createButtons(btnLabel, "primary", onClick)
         const imgContainer = document.createElement("div")
         const Carousel = new carousel({images, container: imgContainer})
 
@@ -299,6 +364,8 @@ App.controllers = {
         titles.lineHeight = "19px"
         titles.color = "#000000"
         titles.marginTop = "40px"
+
+        price = new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(price)
 
         usd.innerHTML = price // HTML
         usds.fontWeight = "400"
@@ -326,11 +393,12 @@ App.controllers = {
 
         return card
     },
-    createModal(children){
+    createModal(onClick, type = ""){
         const closeModal = ()=>{
             console.log("close");
             this.closeModal(md)
         }
+
         const modal = document.createElement("div")
         const md = document.createElement("div")
         const close = document.createElement("div")
@@ -338,9 +406,78 @@ App.controllers = {
         const footer = document.createElement('div')
         const cancel = this.createButtons("cancel", "tertiary", closeModal) 
         const confirm = this.createButtons("confirm", "secondary") 
-        
+        const min = this.createButtons("-", "tertiary",)
+        const more = this.createButtons("+", "tertiary",)
+        const footer2 = document.createElement("div")
+        const remove = document.createElement("p")
+        const product = document.createElement("p")
+        const productPrice = document.createElement("p")
+        const productCount = document.createElement("p")
 
+        if(type === "priceRemove"){
+            const minS = min.style
+            
+            App.state.products.forEach(products => {
+                    products.ttl,
+                    products.price,
+                    product.innerText= `Product: ${products.ttl}`,
+                    productPrice.innerText = `price: ${App.state.count * products.price}`,
+                    productCount.innerText = `count: ${App.state.mutations.getCount()}`
+                })
+                more.onclick = ()=>{
+                    App.state.mutations.setCount("+")
+                    productCount.innerText = `count: ${App.state.mutations.getCount()}`
+                }
+                min.onclick = () =>{
+                    App.state.mutations.setCount("-")
+                    productCount.innerText = `count: ${App.state.mutations.getCount()}`
+                }
+            body.style.margin = "40px"
+            remove.innerHTML="remove from cart"
+            minS.marginRight = "15px"
+
+            body.appendChild(remove)
+            body.appendChild(product)
+            body.appendChild(productPrice)
+            body.appendChild(productCount)
+            footer2.appendChild(min)
+            footer2.appendChild(more)
+             
+        }
+        if(type === "priceAdd"){
+            const minS = min.style
+
+            App.state.products.forEach(products => {
+                    products.ttl,
+                    products.price,
+                    product.innerText= `Product: ${products.ttl}`,
+                    productPrice.innerText = `price: ${App.state.count * products.price}`,
+                    productCount.innerText = `count: ${App.state.mutations.getCount()}`
+                })
+                more.onclick = ()=>{
+                    App.state.mutations.setCount("+")
+                    productCount.innerText = `count: ${App.state.mutations.getCount()}`
+                }
+                min.onclick = () =>{
+                    App.state.mutations.setCount("-")
+                    productCount.innerText = `count: ${App.state.mutations.getCount()}`
+                }
+            body.style.margin = "40px"
+            remove.innerHTML="Add to cart"
+            minS.marginRight = "15px"
+
+            body.appendChild(remove)
+            body.appendChild(product)
+            body.appendChild(productPrice)
+            body.appendChild(productCount)
+            footer2.appendChild(min)
+            footer2.appendChild(more)
+            
+        }
+    
         //----const-styles-------//
+        const footerS = footer2.style
+        const bodyS = body.style
         const closes = close.style
         const mds = md.style
         const fts = footer.style
@@ -350,6 +487,19 @@ App.controllers = {
 
 
         //---------styles---------//
+        remove.style.paddingBottom = "50px"
+        remove.style.borderBottom = "2px solid rgba(0,0,0,0.5)"
+        remove.style.marginTop = "0"
+        product.style.marginBottom = "-20px"
+        productPrice.style.marginBottom = "0px"
+
+        footerS.display = "flex"
+        footerS.margin = "40px"
+        footerS.marginTop = "-60px"
+
+        bodyS.display = "flex"
+        bodyS.flexDirection = "column"
+
         mds.display = "flex"
         mds.justifyContent = "center"
         mds.alignItems = "center"
@@ -358,7 +508,7 @@ App.controllers = {
         mds.left = "0"
         mds.width = "100%"
         mds.height = "100%"
-        mds.backgroundColor = "#9c9c9c"
+        mds.backgroundColor = "rgba(156, 156, 156,0.6) "
 
         modals.display = "flex"
         modals.background = "#FFFFFF"
@@ -389,17 +539,20 @@ App.controllers = {
 
         cancels.cursor = "pointer"
         cancels.marginRight = "24px"
+        confirm.style.cursor = "pointer"
         //---------styles---------//
 
 
         //----------HTML----------//
-        body.innerHTML = children
         close.innerHTML = "X"
         //----------HTML----------//
 
 
         //--------Actions--------//
+        confirm.onclick = onClick
         close.onclick = closeModal
+        cancel.onclick = closeModal
+
         md.classList.add("backdrop")
         md.onclick = (e)=>{
             if(e.target.classList.contains("backdrop")){
@@ -411,6 +564,7 @@ App.controllers = {
 
         modal.appendChild(close)
         modal.appendChild(body)
+        modal.appendChild(footer2)
         modal.appendChild(footer)
         footer.appendChild(cancel)
         footer.appendChild(confirm)

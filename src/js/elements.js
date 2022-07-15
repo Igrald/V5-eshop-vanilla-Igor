@@ -20,7 +20,7 @@ App.elements = {
         checkout: {
             container: document.createElement("div"),
             tittle: document.createElement("h1"),
-            items: [],
+            itemsContainer: document.createElement("div"),
             confirmBtnContainer: document.createElement("div"),
             confirmBtn: document.createElement("button"),
         },
