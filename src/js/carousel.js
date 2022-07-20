@@ -1,115 +1,113 @@
-class carousel{
-    config = {}
-    imageEls = []
+class carousel {
+  config = {};
+  imageEls = [];
 
-    container = null
-    leftContainer = null
-    imgContainer = null
-    rightContainer = null
+  container = null;
+  leftContainer = null;
+  imgContainer = null;
+  rightContainer = null;
 
-    currentImgIdx = 0
+  currentImgIdx = 0;
 
-    /*
+  /*
      @param {Objetc} config
      @param {HTMLElement} config.container
      @param {array<string>} config.images
-    */
+  */
 
-    constructor(config){
-        this.config = config
-        this.container = config.container
+  constructor(config) {
+    this.config = config;
+    this.container = config.container;
 
-        this.createElements()
-        this.preLoadImages()
-        this.renderImg()
-    }
-    
-    renderImg(){
-        this.imgContainer.innerHTML = ""
-        this.imgContainer.appendChild(this.imageEls[this.currentImgIdx])
-    }
+    this.createElements();
+    this.preLoadImages();
+    this.renderImg();
+  }
 
-    createElements() {
-        //------------------crateElements------------------//
-        this.leftContainer = document.createElement("div")
-        this.imgContainer = document.createElement("div")
-        this.rightContainer = document.createElement("div")
-        const caretLeft = document.createElement("img")
-        const caretRight = document.createElement("img")
-        //------------------crateElements------------------//
+  renderImg() {
+    this.imgContainer.innerHTML = "";
+    this.imgContainer.appendChild(this.imageEls[this.currentImgIdx]);
+  }
 
-        //--------------------styles--------------------//
-        caretLeft.src = "./assets/caret.svg"
-        caretLeft.style.transform = "rotate(270deg)"
-        caretLeft.style.width = "35px"
+  createElements() {
+    //------------------crateElements------------------//
+    this.leftContainer = document.createElement("div");
+    this.imgContainer = document.createElement("div");
+    this.rightContainer = document.createElement("div");
+    const caretLeft = document.createElement("img");
+    const caretRight = document.createElement("img");
+    //------------------crateElements------------------//
 
-        caretRight.src = "./assets/caret.svg"
-        caretRight.style.transform = "rotate(90deg)"
-        caretRight.style.width = "35px"
+    //--------------------styles--------------------//
+    caretLeft.src = "./assets/caret.svg";
+    caretLeft.style.transform = "rotate(270deg)";
+    caretLeft.style.width = "35px";
 
-        this.container.style.display = "flex"
-        this.container.style.alignItems = "center"
+    caretRight.src = "./assets/caret.svg";
+    caretRight.style.transform = "rotate(90deg)";
+    caretRight.style.width = "35px";
 
-        this.leftContainer.style.cursor = "pointer"
-        this.leftContainer.style.display = "flex"
+    this.container.style.display = "flex";
+    this.container.style.alignItems = "center";
 
-        this.imgContainer.style.margin = "3px"
+    this.leftContainer.style.cursor = "pointer";
+    this.leftContainer.style.display = "flex";
 
-        this.rightContainer.style.cursor = "pointer"
-        this.rightContainer.style.display = "flex"
-        //--------------------styles--------------------//
+    this.imgContainer.style.margin = "3px";
 
-        //--------------------onClick--------------------//
-        this.leftContainer.onclick = () => {
-            this.currentImgIdx--
+    this.rightContainer.style.cursor = "pointer";
+    this.rightContainer.style.display = "flex";
+    //--------------------styles--------------------//
 
-            if(this.currentImgIdx < 0){
-                this.currentImgIdx = this.imageEls.length -1
-            }
+    //--------------------onClick--------------------//
+    this.leftContainer.onclick = () => {
+      this.currentImgIdx--;
 
-            this.renderImg()
-        }
+      if (this.currentImgIdx < 0) {
+        this.currentImgIdx = this.imageEls.length - 1;
+      }
 
-        this.rightContainer.onclick = () => {
-            this.currentImgIdx++
+      this.renderImg();
+    };
 
-            if(this.currentImgIdx > this.imageEls.length -1){
-                this.currentImgIdx = 0
-            }
+    this.rightContainer.onclick = () => {
+      this.currentImgIdx++;
 
-            this.renderImg()
-        }
-        //--------------------onClick--------------------//
+      if (this.currentImgIdx > this.imageEls.length - 1) {
+        this.currentImgIdx = 0;
+      }
 
+      this.renderImg();
+    };
+    //--------------------onClick--------------------//
 
-        //--------------------Append--------------------//
-        this.leftContainer.appendChild(caretLeft)
-        this.rightContainer.appendChild(caretRight)
+    //--------------------Append--------------------//
+    this.leftContainer.appendChild(caretLeft);
+    this.rightContainer.appendChild(caretRight);
 
-        this.container.appendChild(this.leftContainer)
-        this.container.appendChild(this.imgContainer)
-        this.container.appendChild(this.rightContainer)
-        //--------------------Append--------------------//
-    }
+    this.container.appendChild(this.leftContainer);
+    this.container.appendChild(this.imgContainer);
+    this.container.appendChild(this.rightContainer);
+    //--------------------Append--------------------//
+  }
 
-    preLoadImages(){
-        this.config.images.forEach((img, i) => {
-            const els = document.createElement("img")
+  preLoadImages() {
+    this.config.images.forEach((img, i) => {
+      const els = document.createElement("img");
 
-            els.src = this.config.images[i]
+      els.src = this.config.images[i];
 
-            //----------styles----------//
-            els.style.objectFit = "cover"
-            els.style.borderRadius = "50%"
-            els.style.maxHeight = "300px"
-            els.style.maxWidth = "300px"
-            els.style.height = "300px"
-            els.style.width = "300px"
-            els.style.margin = "2px"
-            //----------styles----------//
+      //----------styles----------//
+      els.style.objectFit = "cover";
+      els.style.borderRadius = "50%";
+      els.style.maxHeight = "300px";
+      els.style.maxWidth = "300px";
+      els.style.height = "300px";
+      els.style.width = "300px";
+      els.style.margin = "2px";
+      //----------styles----------//
 
-            this.imageEls.push(els)
-        })
-    }
-
+      this.imageEls.push(els);
+    });
+  }
 }
