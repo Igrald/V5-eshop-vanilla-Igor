@@ -169,27 +169,11 @@ App.state = {
 
       localStorage.setItem("cart", JSON.stringify(obj));
     },
+    setCart(newCart) {
+      App.state.cart = newCart;
+    },
+    setWallet(newallet) {
+      App.state.wallet = newallet;
+    },
   },
 };
-/*
-Terminar a loja e usar o localStorage para armazenar os dados do usuário, os itens do carrinho e histórico de compra
-
-Tela de login/cadastro
-
-Ao se cadastrar, adicionar fundos na carteira.
-
-Armazenar os dados do usuário: usuário, senha, saldo
-
-Sempre que adicionar produto ao carrinho, salvar no localStorage
-
-Sempre que finalizar uma compra, salvar no localStorage, porem seguir as regras de compra:
-
-Só permite compra se tiver saldo suficiente.
-
-Tira o item do carrinho.
-
-Reduz o saldo do usuário.
-
-Adiciona o item ao histórico de compra.
-
-*/
