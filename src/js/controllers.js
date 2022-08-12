@@ -485,6 +485,7 @@ App.controllers = {
     tittle.style.height = "29px";
     tittle.style.textAlign = "center";
     tittle.style.color = "#000000";
+    tittle.style.marginTop = "7rem";
 
     confirmBtn.style.marginTop = "3rem";
     confirmBtn.style.marginBottom = "3rem";
@@ -507,9 +508,9 @@ App.controllers = {
     itemsContainer.style.display = "flex";
     itemsContainer.style.flexWrap = "wrap";
     itemsContainer.style.justifyContent = "center";
-    itemsContainer.style.marginTop = "6rem";
+    itemsContainer.style.marginTop = "3rem";
     itemsContainer.innerHTML = "";
-    itemsContainer.appendChild(tittle);
+    container.appendChild(tittle);
     this.createCartElements(itemsContainer);
     //-------------------items---------------------//
 
