@@ -52,8 +52,10 @@ App.controllers = {
       alert("Thanks for purchase!");
       localStorage.setItem("wallet", a);
       location.reload();
-      localStorage.setItem("history", cart);
+      localStorage.setItem("historic", cart);
       localStorage.removeItem("countPrice");
+      localStorage.removeItem("cart2");
+      localStorage.removeItem("newWallet");
     }
   },
   createProductsElements(container) {
@@ -68,6 +70,7 @@ App.controllers = {
           const md = this.createModal(
             () => {
               const added = App.state.mutations.addToCart(products);
+              this.dumpData();
               this.closeModal(md);
 
               if (App.state.count === 0) {
@@ -180,9 +183,9 @@ App.controllers = {
           const md = this.createModal(
             () => {
               App.state.mutations.removeFromCart(products);
-
               App.elements.header.cartCount.innerText = App.state.cart.length;
               App.controllers.createCheckout();
+              this.dumpData();
 
               this.closeModal(md);
             },
@@ -328,7 +331,7 @@ App.controllers = {
 
       between.alignItems = "center";
 
-      console.log("history:", localStorage.getItem("history"));
+      console.log("historic:", localStorage.getItem("historic"));
 
       total.style.display = "flex";
       totalNumber.innerHTML = totalFmt;
@@ -472,13 +475,20 @@ App.controllers = {
     //-----------------------style-----------------------//
     container.style.backgroundColor = "#CCCCCC";
     container.style.height = "100%";
-    container.style.padding = "230px";
+    container.style.display = "flex";
+    container.style.flexDirection = "column";
+    container.style.justifyContent = "center";
+
     tittle.style.fontStyle = "normal";
     tittle.style.fontSize = "24px";
     tittle.style.fontWeight = "700";
     tittle.style.height = "29px";
     tittle.style.textAlign = "center";
     tittle.style.color = "#000000";
+    tittle.style.marginTop = "7rem";
+
+    confirmBtn.style.marginTop = "3rem";
+    confirmBtn.style.marginBottom = "3rem";
 
     confirmBtnContainer.style.textAlign = "center";
     //-----------------------style-----------------------//
@@ -498,13 +508,14 @@ App.controllers = {
     itemsContainer.style.display = "flex";
     itemsContainer.style.flexWrap = "wrap";
     itemsContainer.style.justifyContent = "center";
+    itemsContainer.style.marginTop = "3rem";
     itemsContainer.innerHTML = "";
+    container.appendChild(tittle);
     this.createCartElements(itemsContainer);
     //-------------------items---------------------//
 
     confirmBtn.classList.add("btn");
     confirmBtnContainer.appendChild(confirmBtn);
-    container.appendChild(tittle);
     container.appendChild(itemsContainer);
     container.appendChild(confirmBtnContainer);
 
@@ -662,6 +673,9 @@ App.controllers = {
         localStorage.setItem("email", valueText);
         localStorage.setItem("password", valuePassword);
         localStorage.removeItem("countPrice");
+        localStorage.removeItem("newWallet");
+        localStorage.removeItem("cart2");
+        localStorage.removeItem("historic");
         location.reload();
 
         mail = 1;
@@ -677,8 +691,11 @@ App.controllers = {
     const buttonLogout = this.createButtons("logout", "primary", () => {
       localStorage.removeItem("email");
       localStorage.removeItem("password");
-      localStorage.removeItem("history");
       localStorage.removeItem("cart");
+      localStorage.removeItem("newWallet");
+      localStorage.removeItem("cart2");
+      localStorage.removeItem("historic");
+      localStorage.removeItem("countPrice");
 
       if (!localStorage.getItem("email")) {
         localStorage.setItem("wallet", 0);
@@ -950,5 +967,21 @@ App.controllers = {
   },
   closeModal(el) {
     el.style.display = "none";
+  },
+  dumpData() {
+    const data = JSON.stringify(App.state.cart);
+    const newWall = JSON.stringify(App.state.wallet);
+    localStorage.setItem("cart2", data);
+    localStorage.setItem("newWallet", newWall);
+  },
+  loadData() {
+    const data = localStorage.getItem("cart2");
+    const newallet = localStorage.getItem("newWallet");
+    if (data) {
+      App.state.mutations.setCart(JSON.parse(data));
+    }
+    if (newallet) {
+      App.state.mutations.setWallet(JSON.parse(newallet));
+    }
   },
 };
